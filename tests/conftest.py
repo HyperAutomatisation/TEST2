@@ -35,7 +35,9 @@ def db_conn():
 def clean_backfill(db_conn):
     db_conn.execute(
         """
-        TRUNCATE flight_records, weather, atfm_delays, dgac_causes, collection_runs
+        TRUNCATE flight_records, weather, atfm_delays, dgac_causes, collection_runs,
+                 aircraft_rotations, adsb_snapshots, predictions, calendar_days,
+                 notification_log
         RESTART IDENTITY
         """
     )

@@ -1,0 +1,10 @@
+{
+  "response": {
+    "aircraft": {
+      "registration": "F-HRBA",
+      "type": "B789",
+      "icao_type": "B789",
+      "mode_s": "394c00"
+    }
+  }
+}

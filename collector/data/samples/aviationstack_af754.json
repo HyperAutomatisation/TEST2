@@ -1,0 +1,21 @@
+{
+  "data": [
+    {
+      "flight_date": "2026-09-15",
+      "flight_status": "landed",
+      "departure": {
+        "iata": "BZV",
+        "scheduled": "2026-09-15T19:05:00+01:00",
+        "actual": "2026-09-15T19:42:00+01:00"
+      },
+      "arrival": {
+        "iata": "CDG",
+        "scheduled": "2026-09-16T06:40:00+02:00",
+        "actual": "2026-09-16T07:17:00+02:00"
+      },
+      "airline": { "iata": "AF" },
+      "flight": { "iata": "AF754", "icao": "AFR754" },
+      "aircraft": { "registration": "F-HRBA" }
+    }
+  ]
+}

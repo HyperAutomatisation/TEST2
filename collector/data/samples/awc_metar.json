@@ -1,0 +1,18 @@
+[
+  {
+    "icaoId": "LFPG",
+    "reportTime": "2026-09-15T12:00:00Z",
+    "visib": "6.21",
+    "wspd": 8,
+    "wxString": "",
+    "rawOb": "LFPG 151200Z 24008KT 9999 BKN030 18/12 Q1015"
+  },
+  {
+    "icaoId": "FCBB",
+    "reportTime": "2026-09-15T16:00:00Z",
+    "visib": 4,
+    "wspd": 12,
+    "wxString": "TSRA",
+    "rawOb": "FCBB 151600Z 18012KT 4000 TSRA BKN018 27/23 Q1012"
+  }
+]

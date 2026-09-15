@@ -1,6 +1,7 @@
 .env
 .venv/
 venv/
+collector/.state/
 backfill/.state/
 backfill/output/*
 !backfill/output/.gitkeep

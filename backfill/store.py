@@ -79,6 +79,97 @@ def upsert_atfm(rows: list[dict[str, Any]]) -> int:
     return len(rows)
 
 
+def upsert_rotations(rows: list[dict[str, Any]]) -> int:
+    if not rows:
+        return 0
+    sql = """
+        INSERT INTO aircraft_rotations (date, aircraft_reg, retard_troncon_aller_min)
+        VALUES (%(date)s, %(aircraft_reg)s, %(retard_troncon_aller_min)s)
+        ON CONFLICT (date, aircraft_reg) DO UPDATE SET
+            retard_troncon_aller_min = COALESCE(
+                EXCLUDED.retard_troncon_aller_min,
+                aircraft_rotations.retard_troncon_aller_min
+            )
+    """
+    with connect() as conn:
+        with conn.cursor() as cur:
+            for row in rows:
+                cur.execute(sql, row)
+        conn.commit()
+    return len(rows)
+
+
+def insert_adsb_snapshots(rows: list[dict[str, Any]]) -> int:
+    if not rows:
+        return 0
+    sql = """
+        INSERT INTO adsb_snapshots (
+            seen_at, callsign, flight_number, lat, lon, alt_baro, gs, track,
+            seen_pos, inferred_event
+        )
+        VALUES (
+            %(seen_at)s, %(callsign)s, %(flight_number)s, %(lat)s, %(lon)s,
+            %(alt_baro)s, %(gs)s, %(track)s, %(seen_pos)s, %(inferred_event)s
+        )
+    """
+    with connect() as conn:
+        with conn.cursor() as cur:
+            for row in rows:
+                cur.execute(sql, row)
+        conn.commit()
+    return len(rows)
+
+
+def upsert_calendar(rows: list[dict[str, Any]]) -> int:
+    if not rows:
+        return 0
+    sql = """
+        INSERT INTO calendar_days (date, country, label, is_pont)
+        VALUES (%(date)s, %(country)s, %(label)s, %(is_pont)s)
+        ON CONFLICT (date, country) DO UPDATE SET
+            label = EXCLUDED.label,
+            is_pont = EXCLUDED.is_pont
+    """
+    with connect() as conn:
+        with conn.cursor() as cur:
+            for row in rows:
+                cur.execute(sql, row)
+        conn.commit()
+    return len(rows)
+
+
+def upsert_predictions(rows: list[dict[str, Any]]) -> int:
+    if not rows:
+        return 0
+    sql = """
+        INSERT INTO predictions (
+            date, flight_number, model_version,
+            p_0_15, p_15_30, p_30_60, p_60_120, p_120_plus, p_cancel,
+            factors_json
+        )
+        VALUES (
+            %(date)s, %(flight_number)s, %(model_version)s,
+            %(p_0_15)s, %(p_15_30)s, %(p_30_60)s, %(p_60_120)s,
+            %(p_120_plus)s, %(p_cancel)s, %(factors_json)s
+        )
+        ON CONFLICT (date, flight_number, model_version) DO UPDATE SET
+            p_0_15 = EXCLUDED.p_0_15,
+            p_15_30 = EXCLUDED.p_15_30,
+            p_30_60 = EXCLUDED.p_30_60,
+            p_60_120 = EXCLUDED.p_60_120,
+            p_120_plus = EXCLUDED.p_120_plus,
+            p_cancel = EXCLUDED.p_cancel,
+            factors_json = EXCLUDED.factors_json,
+            created_at = NOW()
+    """
+    with connect() as conn:
+        with conn.cursor() as cur:
+            for row in rows:
+                cur.execute(sql, row)
+        conn.commit()
+    return len(rows)
+
+
 def upsert_dgac(rows: list[dict[str, Any]]) -> int:
     if not rows:
         return 0

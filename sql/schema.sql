@@ -136,3 +136,22 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_atfm_natural
     ON atfm_delays (date, airport);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_dgac_natural
     ON dgac_causes (periode, airline, cause);
+
+CREATE TABLE IF NOT EXISTS adsb_snapshots (
+    id SERIAL PRIMARY KEY,
+    seen_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    callsign TEXT NOT NULL,
+    flight_number TEXT,
+    lat DOUBLE PRECISION,
+    lon DOUBLE PRECISION,
+    alt_baro DOUBLE PRECISION,
+    gs DOUBLE PRECISION,
+    track DOUBLE PRECISION,
+    seen_pos DOUBLE PRECISION,
+    inferred_event TEXT
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_aircraft_rotations_natural
+    ON aircraft_rotations (date, aircraft_reg);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_predictions_natural
+    ON predictions (date, flight_number, model_version);

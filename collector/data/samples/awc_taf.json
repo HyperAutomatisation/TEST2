@@ -1,0 +1,10 @@
+[
+  {
+    "icaoId": "LFPG",
+    "rawTAF": "TAF LFPG 151100Z 1512/1618 24010KT 9999 BKN030"
+  },
+  {
+    "icaoId": "FCBB",
+    "rawTAF": "TAF FCBB 151100Z 1512/1618 18012KT 4000 TSRA BKN018"
+  }
+]

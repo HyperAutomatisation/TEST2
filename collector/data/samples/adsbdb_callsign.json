@@ -1,0 +1,10 @@
+{
+  "response": {
+    "flightroute": {
+      "callsign": "AFR754",
+      "origin": { "icao_code": "FZAA", "iata_code": "FIH" },
+      "destination": { "icao_code": "LFPG", "iata_code": "CDG" },
+      "airline": { "name": "Air France", "icao": "AFR" }
+    }
+  }
+}
