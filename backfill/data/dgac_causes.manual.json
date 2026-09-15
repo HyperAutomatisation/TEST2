@@ -1,0 +1,23 @@
+[
+  {
+    "periode": "2026-07",
+    "airline": "AF",
+    "cause": "controle_aerien",
+    "share_pct": null,
+    "notes": "Saisie manuelle v1 : part des causes DGAC pour Air France, si la fiche mensuelle la détaille. Laisser null tant que le chiffre n'est pas lu dans la publication."
+  },
+  {
+    "periode": "2026-07",
+    "airline": "AF",
+    "cause": "greve",
+    "share_pct": null,
+    "notes": "Saisie manuelle. Pas d'accent dans la clé cause (colonne technique)."
+  },
+  {
+    "periode": "2026-07",
+    "airline": "AF",
+    "cause": "compagnie",
+    "share_pct": null,
+    "notes": "Saisie manuelle."
+  }
+]

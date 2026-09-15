@@ -1,0 +1,44 @@
+[
+  {
+    "icao24": "394c00",
+    "firstSeen": 1789497120,
+    "estDepartureAirport": "FZAA",
+    "lastSeen": 1789535820,
+    "estArrivalAirport": "LFPG",
+    "callsign": "AFR754  ",
+    "_kind": "arrival",
+    "_expected_date": "2026-09-15",
+    "_expected_delay": 37,
+    "_expected_itinerary": "fih"
+  },
+  {
+    "icao24": "394c00",
+    "firstSeen": 1789497120,
+    "estDepartureAirport": "FCBB",
+    "lastSeen": 1789500720,
+    "estArrivalAirport": "FZAA",
+    "callsign": "AFR754  ",
+    "_kind": "departure"
+  },
+  {
+    "icao24": "394c00",
+    "firstSeen": 1789590600,
+    "estDepartureAirport": "FCBB",
+    "lastSeen": 1789620480,
+    "estArrivalAirport": "LFPG",
+    "callsign": "AFR722  ",
+    "_kind": "arrival",
+    "_expected_date": "2026-09-16",
+    "_expected_delay": 8,
+    "_expected_itinerary": "direct"
+  },
+  {
+    "icao24": "394c00",
+    "firstSeen": 1789590600,
+    "estDepartureAirport": "FCBB",
+    "lastSeen": 1789594200,
+    "estArrivalAirport": "LFPG",
+    "callsign": "AFR722  ",
+    "_kind": "departure"
+  }
+]

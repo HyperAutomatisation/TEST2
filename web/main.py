@@ -47,6 +47,7 @@ def api_vol_du_jour(
 def accueil(request: Request, date_param: date | None = Query(default=None, alias="date")):
     payload = payload_vol_du_jour(date_param)
     return TEMPLATES.TemplateResponse(
+        request,
         "index.html",
-        {"request": request, "payload": payload},
+        {"payload": payload},
     )

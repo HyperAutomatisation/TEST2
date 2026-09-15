@@ -126,3 +126,13 @@ CREATE TABLE IF NOT EXISTS collection_runs (
     records_fetched INTEGER,
     error TEXT
 );
+
+-- Unicité pour reprise du backfill (chantier 2).
+CREATE UNIQUE INDEX IF NOT EXISTS idx_flight_records_natural
+    ON flight_records (date, flight_number, source);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_weather_natural
+    ON weather (date, airport, forecast_bool);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_atfm_natural
+    ON atfm_delays (date, airport);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_dgac_natural
+    ON dgac_causes (periode, airline, cause);

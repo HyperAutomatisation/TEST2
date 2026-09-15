@@ -22,3 +22,10 @@ OURAIRPORTS_URL = os.environ.get(
 AVIATIONSTACK_KEY = os.environ.get("AVIATIONSTACK_KEY", "")
 OPENSKY_USER = os.environ.get("OPENSKY_USER", "")
 OPENSKY_PASS = os.environ.get("OPENSKY_PASS", "")
+# OpenSky exige OAuth2 (client credentials) depuis mars 2026.
+# USER/PASS restent lus : si CLIENT_ID/SECRET sont vides, on tente USER/PASS
+# comme identifiants de client (certains dépôts y collent le couple OAuth2).
+OPENSKY_CLIENT_ID = os.environ.get("OPENSKY_CLIENT_ID", "")
+OPENSKY_CLIENT_SECRET = os.environ.get("OPENSKY_CLIENT_SECRET", "")
+OPENSKY_REQUEST_DELAY_S = float(os.environ.get("OPENSKY_REQUEST_DELAY_S", "10"))
+BACKFILL_MONTHS = int(os.environ.get("BACKFILL_MONTHS", "12"))

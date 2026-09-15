@@ -29,3 +29,15 @@ def _prepare_database() -> None:
 def db_conn():
     with connect() as conn:
         yield conn
+
+
+@pytest.fixture
+def clean_backfill(db_conn):
+    db_conn.execute(
+        """
+        TRUNCATE flight_records, weather, atfm_delays, dgac_causes, collection_runs
+        RESTART IDENTITY
+        """
+    )
+    db_conn.commit()
+    return db_conn
