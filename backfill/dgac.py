@@ -21,10 +21,8 @@ PDF_NAME_RE = re.compile(
     r"tendanCIEL[_-](?P<year>\d{4})[_-](?P<month>\d{2})",
     re.IGNORECASE,
 )
-DELAY_SHARE_RE = re.compile(
-    r"Vols retardés de plus de 15 min\s+([0-9]+,[0-9]+|[0-9]+(?:\.[0-9]+)?)\s*%",
-    re.IGNORECASE,
-)
+DELAY_LABEL_RE = re.compile(r"Vols retard[ée]s de plus de 15 min", re.IGNORECASE)
+PERCENT_RE = re.compile(r"([0-9]+(?:[.,][0-9]+)?)\s*%")
 
 
 def parse_html_pdf_links(html: str, *, base: str = DGAC_STATS_URL) -> list[dict[str, str]]:
@@ -46,19 +44,24 @@ def parse_html_pdf_links(html: str, *, base: str = DGAC_STATS_URL) -> list[dict[
 
 
 def parse_pdf_text(text: str, *, periode: str, airline: str = "TOUS") -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
-    match = DELAY_SHARE_RE.search(text.replace("\xa0", " "))
-    if match:
-        share = float(match.group(1).replace(",", "."))
-        rows.append(
-            {
-                "periode": periode,
-                "airline": airline,
-                "cause": "vols_retardes_plus_15min",
-                "share_pct": share,
-            }
-        )
-    return rows
+    compact = re.sub(r"\s+", " ", text.replace("\xa0", " "))
+    match = DELAY_LABEL_RE.search(compact)
+    if not match:
+        return []
+    after = PERCENT_RE.findall(compact[match.end() : match.end() + 90])
+    before = PERCENT_RE.findall(compact[max(0, match.start() - 90) : match.start()])
+    raw = (after or before or [None])[0]
+    if raw is None:
+        return []
+    share = float(raw.replace(",", "."))
+    return [
+        {
+            "periode": periode,
+            "airline": airline,
+            "cause": "vols_retardes_plus_15min",
+            "share_pct": share,
+        }
+    ]
 
 
 def pdf_bytes_to_text(blob: bytes) -> str:
@@ -133,6 +136,7 @@ def run(
     pdf_texts: dict[str, str] | None = None,
     fetch_pdfs: bool = False,
     allow_sample: bool = True,
+    min_periode: str | None = None,
 ) -> dict[str, Any]:
     page = html if html is not None else fetch_html(allow_sample=allow_sample)
     texts = dict(pdf_texts or {})
@@ -140,6 +144,8 @@ def run(
         http = RateLimitedClient(delay_s=0.4, timeout_s=45.0)
         for link in parse_html_pdf_links(page):
             if not link["periode"] or link["periode"] in texts:
+                continue
+            if min_periode and link["periode"] < min_periode:
                 continue
             try:
                 blob = http.get_bytes(link["url"])
@@ -151,5 +157,7 @@ def run(
         if sample_txt.exists():
             texts["2026-07"] = sample_txt.read_text(encoding="utf-8")
     parsed = parse(page, texts)
+    if min_periode:
+        parsed = [row for row in parsed if row["periode"] >= min_periode]
     saved = save(parsed)
     return {"records": saved, "pdfs": sorted(texts)}

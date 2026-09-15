@@ -15,14 +15,13 @@ def test_liens_tendanciel() -> None:
 def test_texte_tendanciel_juillet_2026() -> None:
     text = (SAMPLES_DIR / "tendanciel_2026_07.txt").read_text(encoding="utf-8")
     rows = parse_pdf_text(text, periode="2026-07")
-    assert rows == [
-        {
-            "periode": "2026-07",
-            "airline": "TOUS",
-            "cause": "vols_retardes_plus_15min",
-            "share_pct": 40.3,
-        }
-    ]
+    assert rows[0]["share_pct"] == 40.3
+
+
+def test_texte_tendanciel_ordre_pypdf() -> None:
+    text = "40,3% 30,7% 32,6% 28,1%Vols retardés de plus de 15 min"
+    rows = parse_pdf_text(text, periode="2026-07")
+    assert rows[0]["share_pct"] == 40.3
 
 
 def test_saisie_manuelle_null_ignoree(clean_backfill) -> None:

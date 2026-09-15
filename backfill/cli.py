@@ -117,6 +117,7 @@ def cmd_run(args: argparse.Namespace) -> int:
             pdf_texts=pdf_texts,
             fetch_pdfs=not args.offline and not args.dry_run,
             allow_sample=True,
+            min_periode=start.isoformat()[:7],
         )
 
     if args.dry_run:
