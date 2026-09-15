@@ -1,0 +1,5 @@
+id,ident,type,name,latitude_deg,longitude_deg,elevation_ft,continent,iso_country,iso_region,municipality,scheduled_service,icao_code,iata_code,gps_code,local_code,home_link,wikipedia_link,keywords
+2868,FCBB,large_airport,Maya-Maya International Airport,-4.2517,15.253,1048,AF,CG,CG-12,Brazzaville,yes,FCBB,BZV,FCBB,,,https://en.wikipedia.org/wiki/Maya-Maya_Airport,
+2871,FCPP,large_airport,Antonio Agostinho-Neto International Airport,-4.81603,11.8866,55,AF,CG,CG-5,Pointe Noire,yes,FCPP,PNR,FCPP,,,https://en.wikipedia.org/wiki/Agostinho-Neto_International_Airport,Pointe Noire
+3040,FZAA,large_airport,Ndjili International Airport,-4.38575,15.4446,1027,AF,CD,CD-KN,Kinshasa,yes,FZAA,FIH,FZAA,,,https://en.wikipedia.org/wiki/N%27djili_Airport,
+4185,LFPG,large_airport,Charles de Gaulle International Airport,49.00896,2.554117,392,EU,FR,FR-IDF,"Paris (Roissy-en-France, Val-d'Oise)",yes,LFPG,CDG,LFPG,,http://www.aeroportsdeparis.fr/,https://en.wikipedia.org/wiki/Charles_de_Gaulle_Airport,"PAR, Aéroport Roissy-Charles de Gaulle, Roissy Airport"
