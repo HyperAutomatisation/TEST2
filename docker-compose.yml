@@ -35,5 +35,22 @@ services:
     ports:
       - "8000:8000"
 
+  collector:
+    build: .
+    command: ["python", "-m", "collector"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://corridor:corridor@postgres:5432/corridor
+      AVIATIONSTACK_KEY: ${AVIATIONSTACK_KEY:-}
+      OPENSKY_USER: ${OPENSKY_USER:-}
+      OPENSKY_PASS: ${OPENSKY_PASS:-}
+      OPENSKY_CLIENT_ID: ${OPENSKY_CLIENT_ID:-}
+      OPENSKY_CLIENT_SECRET: ${OPENSKY_CLIENT_SECRET:-}
+      TIMEZONE: ${TIMEZONE:-Africa/Brazzaville}
+      COLLECTORS_USE_SAMPLE: ${COLLECTORS_USE_SAMPLE:-}
+      AVIATIONSTACK_MAX_REQ_PER_DAY: ${AVIATIONSTACK_MAX_REQ_PER_DAY:-4}
+
 volumes:
   postgres_data:

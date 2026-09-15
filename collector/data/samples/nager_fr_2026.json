@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2026-01-01",
+    "localName": "Jour de l'an",
+    "name": "New Year's Day",
+    "countryCode": "FR"
+  },
+  {
+    "date": "2026-05-14",
+    "localName": "Ascension",
+    "name": "Ascension Day",
+    "countryCode": "FR"
+  },
+  {
+    "date": "2026-07-14",
+    "localName": "Fête nationale",
+    "name": "Bastille Day",
+    "countryCode": "FR"
+  },
+  {
+    "date": "2026-12-25",
+    "localName": "Noël",
+    "name": "Christmas Day",
+    "countryCode": "FR"
+  }
+]

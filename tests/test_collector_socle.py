@@ -20,6 +20,8 @@ def test_un_collecteur_ne_bloque_pas_les_autres(monkeypatch, clean_backfill) -> 
     monkeypatch.setattr("collector.openmeteo_forecast.run", lambda **_: {"records": 2})
     monkeypatch.setattr("collector.awc.run", lambda **_: {"records": 3})
     monkeypatch.setattr("collector.airports_cg.run", lambda **_: {"records": 0})
+    monkeypatch.setattr("collector.nager.run", lambda **_: {"records": 4})
+    monkeypatch.setattr("collector.socle.generate_for_date", lambda *_a, **_k: {"records": 0})
     summary = run_evening()
     assert summary["sources"]["aviationstack"]["status"] == "error"
     assert summary["sources"]["adsbdb"]["status"] == "ok"

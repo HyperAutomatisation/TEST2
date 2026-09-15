@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from corridor.settings import TIMEZONE
 
 from backfill.collection import run_safely
-from collector import adsblol, adsbdb, airports_cg, aviationstack, awc, openmeteo_forecast
+from collector import adsblol, adsbdb, airports_cg, aviationstack, awc, nager, openmeteo_forecast
 from collector.window import in_flight_window
+from model.predict import generate_for_date
 from notify import send
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,9 @@ def run_evening(day=None) -> dict:
     summary["sources"]["openmeteo"] = run_safely("openmeteo_forecast", openmeteo_forecast.run)
     summary["sources"]["awc"] = run_safely("awc", awc.run)
     summary["sources"]["airports_cg"] = run_safely("airports_cg", airports_cg.run, day=day)
+    summary["sources"]["nager"] = run_safely("nager", nager.run)
+    resolved = day or datetime.now(ZoneInfo(TIMEZONE)).date()
+    summary["sources"]["model"] = run_safely("model_evening", generate_for_date, resolved)
     alerts = []
     av = summary["sources"]["aviationstack"]
     if isinstance(av, dict):
@@ -47,6 +51,9 @@ def run_closure(day=None) -> dict:
     summary["sources"]["aviationstack"] = run_safely("aviationstack_closure", aviationstack.run, day=day)
     summary["sources"]["awc"] = run_safely("awc_closure", awc.run)
     summary["sources"]["airports_cg"] = run_safely("airports_cg_closure", airports_cg.run, day=day)
+    resolved = day or datetime.now(ZoneInfo(TIMEZONE)).date()
+    yesterday = resolved - timedelta(days=1)
+    summary["sources"]["model"] = run_safely("model_closure", generate_for_date, yesterday)
     return summary
 
 
