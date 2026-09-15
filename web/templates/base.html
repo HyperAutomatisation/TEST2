@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ seo_title }}{% endblock %}</title>
+    <meta name="description" content="{{ seo_description }}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { marine: "#0b1f3a" },
+          },
+        },
+      };
+    </script>
+    {% if chart %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    {% endif %}
+  </head>
+  <body class="bg-white text-marine min-h-screen">
+    <header class="bg-marine text-white">
+      <div class="max-w-3xl mx-auto px-4 py-4">
+        <a href="/" class="text-white no-underline">
+          <h1 class="text-xl font-semibold m-0">Corridor CD</h1>
+        </a>
+        <p class="text-sm opacity-90 mt-1 mb-0">{{ seo_title }}</p>
+        <nav class="flex flex-wrap gap-x-4 gap-y-2 mt-3 text-sm">
+          <a class="underline" href="/">Baromètre</a>
+          <a class="underline" href="/meilleur-jour">Meilleur jour</a>
+          <a class="underline" href="/fiabilite">Fiabilité</a>
+        </nav>
+      </div>
+    </header>
+    <main class="max-w-3xl mx-auto px-4 py-6">{% block content %}{% endblock %}</main>
+    <footer class="max-w-3xl mx-auto px-4 py-8 text-sm border-t border-slate-200">
+      Pas de compte, pas de paiement, pas de cookie de suivi. Usage raisonnable de
+      l'API publique <code>/api/v1</code>.
+    </footer>
+  </body>
+</html>

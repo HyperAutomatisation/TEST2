@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Fiabilité du modèle : {{ seo_title }}{% endblock %}
+{% block content %}
+<h2 class="text-xl font-semibold mt-0">Fiabilité</h2>
+<p class="text-sm text-slate-600">
+  Score de Brier multiclasse (plus bas = mieux) comparé à la
+  {{ payload.naive_label }}.
+</p>
+
+{% if payload.n %}
+<p class="text-lg font-semibold">
+  Brier modèle v1 : {{ "%.3f"|format(payload.brier) }}
+  sur {{ payload.n }} prédictions.
+</p>
+<p>
+  Brier naïve : {{ "%.3f"|format(payload.brier_naive) }}.
+  {% if payload.beats_naive %}
+  Le produit bat la prédiction naïve.
+  {% else %}
+  Le produit ne bat pas encore la prédiction naïve.
+  {% endif %}
+</p>
+<p>Prédictions dont la classe la plus probable est la bonne : {{ pct(payload.pct_correct) }}.</p>
+
+{% if payload.weekly %}
+<h3 class="text-base font-semibold mt-6">Par semaine ISO</h3>
+<div class="overflow-x-auto">
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="text-left py-2 pr-2">Semaine</th>
+        <th class="text-left py-2 pr-2">n</th>
+        <th class="text-left py-2 pr-2">Brier</th>
+        <th class="text-left py-2 pr-2">Naïve</th>
+        <th class="text-left py-2">Bat la naïve</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in payload.weekly %}
+      <tr class="border-b border-slate-100">
+        <td class="py-2 pr-2">{{ row.semaine }}</td>
+        <td class="py-2 pr-2">{{ row.n }}</td>
+        <td class="py-2 pr-2">{% if row.brier is not none %}{{ "%.3f"|format(row.brier) }}{% else %}n.d.{% endif %}</td>
+        <td class="py-2 pr-2">{% if row.brier_naive is not none %}{{ "%.3f"|format(row.brier_naive) }}{% else %}n.d.{% endif %}</td>
+        <td class="py-2">{% if row.beats_naive %}oui{% else %}non{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% else %}
+<p>
+  Pas encore assez de prédictions recoupées avec le réel. Générer hors ligne :
+  <code>python -m model generate --from-records</code> puis
+  <code>python -m model brier</code>.
+</p>
+{% endif %}
+{% endblock %}

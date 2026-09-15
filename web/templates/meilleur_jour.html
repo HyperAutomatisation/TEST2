@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Meilleur jour d'expédition : {{ seo_title }}{% endblock %}
+{% block content %}
+<h2 class="text-xl font-semibold mt-0">Meilleur jour d'expédition</h2>
+<p class="text-sm text-slate-600">
+  Classement des jours de semaine selon la ponctualité observée (retard inférieur à 15 min).
+</p>
+<div class="overflow-x-auto">
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="text-left py-2 pr-2">Rang</th>
+        <th class="text-left py-2 pr-2">Jour</th>
+        <th class="text-left py-2 pr-2">Vols grille</th>
+        <th class="text-left py-2 pr-2">Ponctualité</th>
+        <th class="text-left py-2">Retard moyen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in payload.ranking %}
+      <tr class="border-b border-slate-100">
+        <td class="py-2 pr-2">{{ loop.index }}</td>
+        <td class="py-2 pr-2">{{ row.weekday_label }}</td>
+        <td class="py-2 pr-2">
+          {% for vol in row.flights %}
+          <a class="underline" href="/vol/{{ vol.flight_number }}">{{ vol.flight_label }}</a>
+          {% if not loop.last %}, {% endif %}
+          {% endfor %}
+        </td>
+        <td class="py-2 pr-2">{{ pct(row.ponctualite) }}</td>
+        <td class="py-2">{{ minutes(row.retard_moyen) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="mt-6">{{ payload.lecture }}</p>
+{% endblock %}

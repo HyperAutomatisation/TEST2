@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}{{ payload.flight_label }} : {{ seo_title }}{% endblock %}
+{% block content %}
+<h2 class="text-xl font-semibold mt-0">{{ payload.flight_label }}</h2>
+<p class="text-sm text-slate-600">
+  Prochain départ grille : {{ payload.weekday_label }} {{ payload.date }}.
+</p>
+
+{% if payload.grille %}
+<div class="overflow-x-auto">
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="text-left py-2 pr-2">Départ</th>
+        <th class="text-left py-2 pr-2">Arrivée CDG</th>
+        <th class="text-left py-2">Escale</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vol in payload.grille %}
+      <tr class="border-b border-slate-100">
+        <td class="py-2 pr-2">{{ vol.departure_airport }} à {{ vol.dep_display }}</td>
+        <td class="py-2 pr-2">{{ vol.arr_display }}</td>
+        <td class="py-2">{{ vol.escale }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<h3 class="text-base font-semibold mt-6">Statut</h3>
+{% if payload.live %}
+<p>
+  Dernière position {{ payload.live.callsign }}
+  {% if payload.live.seen_display %}le {{ payload.live.seen_display }}{% endif %}
+  {% if payload.live.lat is not none %}, lat {{ payload.live.lat }}, lon {{ payload.live.lon }}{% endif %}
+  {% if payload.live.inferred_event %} ({{ payload.live.inferred_event }}){% endif %}.
+</p>
+{% if not payload.live.in_window %}
+<p class="text-sm">Hors fenêtre de vol : le polling adsb.lol est en sommeil.</p>
+{% endif %}
+{% else %}
+<p>Pas de position temps réel pour l'instant (hors fenêtre ou collecteur en sommeil).</p>
+{% endif %}
+
+<h3 class="text-base font-semibold mt-6">Distribution de probabilité</h3>
+{% if payload.prediction %}
+<ul class="text-sm pl-5">
+  {% for key, label in payload.prediction.labels.items() %}
+  <li>{{ label }} : {{ (payload.prediction.probs[key] * 100) | round(1) }} %</li>
+  {% endfor %}
+</ul>
+<p class="text-sm">Facteurs du jour :</p>
+<ul class="text-sm pl-5">
+  {% for factor in payload.prediction.factors %}
+  <li>{{ factor }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Prévision en attente de la collecte de 21 h ou d'un historique suffisant.</p>
+{% endif %}
+
+<h3 class="text-base font-semibold mt-6">Fenêtre de sortie d'entrepôt CDG</h3>
+{% if payload.warehouse %}
+<p>
+  Arrivée retenue : {{ payload.warehouse.arrival_display }}.
+  Sortie estimée : {{ payload.warehouse.warehouse_display }}.
+</p>
+<p class="text-sm">{{ payload.warehouse.disclaimer }}.</p>
+{% else %}
+<p>Fenêtre d'entrepôt indisponible tant que l'arrivée n'est pas datée.</p>
+{% endif %}
+
+<h3 class="text-base font-semibold mt-6">Historique 90 jours</h3>
+{% if payload.history_90d %}
+<canvas id="chart-90j" height="120"></canvas>
+<script>
+  const points = {{ payload.history_90d_json | safe }};
+  new Chart(document.getElementById("chart-90j"), {
+    type: "bar",
+    data: {
+      labels: points.map((p) => p.date),
+      datasets: [
+        {
+          label: "Retard à CDG (min)",
+          data: points.map((p) => p.delay_min),
+          backgroundColor: "#0b1f3a",
+        },
+      ],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } },
+    },
+  });
+</script>
+{% else %}
+<p>Pas encore assez d'historique sur 90 jours pour ce numéro.</p>
+{% endif %}
+
+<h3 class="text-base font-semibold mt-6">Ponctualité par jour de semaine</h3>
+<div class="overflow-x-auto">
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="text-left py-2 pr-2">Jour</th>
+        <th class="text-left py-2 pr-2">Observations</th>
+        <th class="text-left py-2 pr-2">Ponctualité</th>
+        <th class="text-left py-2">Retard moyen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in payload.ponctualite_semaine %}
+      <tr class="border-b border-slate-100">
+        <td class="py-2 pr-2">{{ row.weekday_label }}</td>
+        <td class="py-2 pr-2">{{ row.n }}</td>
+        <td class="py-2 pr-2">{{ pct(row.ponctualite) }}</td>
+        <td class="py-2">{{ minutes(row.retard_moyen) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

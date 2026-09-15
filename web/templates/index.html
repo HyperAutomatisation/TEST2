@@ -1,105 +1,89 @@
-<!DOCTYPE html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>suivi fret aérien Congo Brazzaville Pointe-Noire Paris</title>
-    <meta
-      name="description"
-      content="Corridor CD : vols Air France Congo vers Paris CDG. Votre marchandise sera disponible à CDG à l'heure prévue de la grille, confiance à venir."
-    />
-    <style>
-      :root {
-        --marine: #0b1f3a;
-        --blanc: #ffffff;
-        --ligne: #d5dde8;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-        background: var(--blanc);
-        color: var(--marine);
-        line-height: 1.45;
-      }
-      header {
-        background: var(--marine);
-        color: var(--blanc);
-        padding: 1.25rem 1rem;
-      }
-      header h1 {
-        margin: 0 0 0.35rem;
-        font-size: 1.4rem;
-      }
-      header p {
-        margin: 0;
-        opacity: 0.9;
-      }
-      main {
-        max-width: 40rem;
-        margin: 0 auto;
-        padding: 1.25rem 1rem 2rem;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-      }
-      th,
-      td {
-        text-align: left;
-        padding: 0.55rem 0.4rem;
-        border-bottom: 1px solid var(--ligne);
-        vertical-align: top;
-      }
-      th {
-        font-weight: 600;
-      }
-      .note {
-        margin-top: 1.5rem;
-        font-size: 0.95rem;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Corridor CD</h1>
-      <p>Fret aérien Congo vers Paris CDG, sans compte ni paiement.</p>
-    </header>
-    <main>
-      <h2>Vols du {{ payload.weekday_label }} {{ payload.date }}</h2>
-      {% if payload.flights %}
-      <table>
-        <thead>
-          <tr>
-            <th>Vol</th>
-            <th>Départ</th>
-            <th>Arrivée CDG</th>
-            <th>Escale</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for vol in payload.flights %}
-          <tr>
-            <td>{{ vol.flight_label }}<br />{{ vol.aircraft }}</td>
-            <td>{{ vol.departure_airport }} à {{ vol.dep_display }}</td>
-            <td>{{ vol.arr_display }}</td>
-            <td>{{ vol.escale }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-      {% else %}
-      <p>Aucun vol de référence actif pour cette date.</p>
-      {% endif %}
-      <p class="note">
-        Phrase cible du produit : « Votre marchandise sera disponible à CDG à
-        [heure], confiance [X] %. » Ce squelette publie le vol du jour selon la
-        grille de saison. La confiance sera calculée quand l'historique sera en
-        base.
-      </p>
-    </main>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<section class="mb-6">
+  <p class="text-sm uppercase tracking-wide text-slate-500 m-0">Chiffre signature</p>
+  <p class="text-2xl font-semibold mt-2 mb-0">{{ payload.signature.text }}</p>
+</section>
+
+<h2 class="text-lg font-semibold mt-0">
+  Vols du {{ grille.weekday_label }} {{ grille.date }}
+</h2>
+{% if grille.flights %}
+<div class="overflow-x-auto">
+  <table class="w-full text-sm border-collapse">
+    <thead>
+      <tr class="border-b border-slate-200">
+        <th class="text-left py-2 pr-2">Vol</th>
+        <th class="text-left py-2 pr-2">Départ</th>
+        <th class="text-left py-2 pr-2">Arrivée CDG</th>
+        <th class="text-left py-2">Escale</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for vol in grille.flights %}
+      <tr class="border-b border-slate-100">
+        <td class="py-2 pr-2">
+          <a class="underline" href="/vol/{{ vol.flight_number }}">{{ vol.flight_label }}</a><br />
+          {{ vol.aircraft }}
+        </td>
+        <td class="py-2 pr-2">{{ vol.departure_airport }} à {{ vol.dep_display }}</td>
+        <td class="py-2 pr-2">{{ vol.arr_display }}</td>
+        <td class="py-2">{{ vol.escale }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p>Aucun vol de référence actif pour cette date.</p>
+{% endif %}
+
+<h2 class="text-lg font-semibold mt-8">Baromètre des 7 prochains jours</h2>
+<p class="text-sm text-slate-600">
+  Ponctualité et retard moyen sur 30 jours d'observations, pour chaque numéro.
+</p>
+{% for jour in payload.days %}
+<section class="mt-4 border border-slate-200 rounded-md p-3">
+  <h3 class="text-base font-semibold mt-0 mb-2">
+    {{ jour.weekday_label }} {{ jour.date }}
+  </h3>
+  {% if jour.flights %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="border-b border-slate-200">
+          <th class="text-left py-1 pr-2">Vol</th>
+          <th class="text-left py-1 pr-2">Itinéraire</th>
+          <th class="text-left py-1 pr-2">Départ</th>
+          <th class="text-left py-1 pr-2">CDG</th>
+          <th class="text-left py-1 pr-2">Ponctualité 30 j</th>
+          <th class="text-left py-1">Retard moyen</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vol in jour.flights %}
+        <tr class="border-b border-slate-100">
+          <td class="py-1 pr-2">
+            <a class="underline" href="/vol/{{ vol.flight_number }}">{{ vol.flight_label }}</a>
+          </td>
+          <td class="py-1 pr-2">{{ vol.itinerary }}</td>
+          <td class="py-1 pr-2">{{ vol.dep_display }}</td>
+          <td class="py-1 pr-2">{{ vol.arr_display }}</td>
+          <td class="py-1 pr-2">{{ pct(vol.ponctualite_30d) }}</td>
+          <td class="py-1">{{ minutes(vol.retard_moyen_30d) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="text-sm mb-0">Aucun vol actif.</p>
+  {% endif %}
+</section>
+{% endfor %}
+
+<p class="mt-8 text-sm">
+  Phrase cible : votre marchandise sera disponible à CDG à l'heure estimée,
+  avec une confiance publiée sur la page du vol. Estimation honnête, modèle v1.
+</p>
+{% endblock %}

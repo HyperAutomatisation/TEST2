@@ -3,6 +3,7 @@ name: corridor-cd
 services:
   postgres:
     image: postgres:16
+    restart: unless-stopped
     environment:
       POSTGRES_USER: corridor
       POSTGRES_PASSWORD: corridor
@@ -19,6 +20,7 @@ services:
 
   app:
     build: .
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,6 +39,7 @@ services:
 
   collector:
     build: .
+    restart: unless-stopped
     command: ["python", "-m", "collector"]
     depends_on:
       postgres:

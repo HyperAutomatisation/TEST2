@@ -1,1 +1,1 @@
-"""Application FastAPI du chantier 1 : vol du jour, sans compte ni paiement."""
+"""Application FastAPI : pages publiques et API JSON, sans compte ni paiement."""
